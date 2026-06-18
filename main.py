@@ -23,7 +23,7 @@ import paho.mqtt.client as mqtt
 import pymysql
 
 # ------------------------- CONFIG ---------------------------
-BROKER = "test.mosquitto.org"
+BROKER = "broker.hivemq.com"
 PORT = 1883
 TOPICS = [
     "IUT/Colmar2026/SAE2.04/Maison1",
@@ -111,7 +111,7 @@ def inserer_mesure(conn, m: dict):
         )
         # 2) Insere la temperature (cle etrangere capteur_id)
         cur.execute(
-            "INSERT INTO mesure (capteur_id, date_mesure, temperature) "
+            "INSERT INTO mesure (capteur_id, timestamp, temperature) "
             "VALUES (%s, %s, %s)",
             (m["id"], m["date_mesure"], m["temperature"]),
         )
