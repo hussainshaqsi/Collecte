@@ -30,13 +30,7 @@ TOPICS = [
     "IUT/Colmar2026/SAE2.04/Maison2",
 ]
 
-DB = {
-    "host": "10.252.14.75",      # 127.0.0.1 si MySQL est local, sinon IP de la VM
-    "user": "sae",
-    "password": "toto",
-    "database": "sae204",
-    "connect_timeout": 5,
-}
+from config import  DB
 
 CACHE = "cache.jsonl"          # mesures en attente quand la base est injoignable
 _conn = None                   # connexion MySQL reutilisee entre les messages
@@ -69,7 +63,8 @@ def parse_message(payload: str) -> dict:
             brut[derniere_cle] = brut[derniere_cle] + "." + morceau
 
     # On combine date + heure en un timestamp au format MySQL (AAAA-MM-JJ HH:MM:SS)
-    dt = datetime.strptime(f"{brut['date']} {brut['heure']}", "%d/%m/%Y %H:%M:%S")
+    heure = brut.get('heure') or brut.get('time')
+    dt = datetime.strptime(f"{brut['date']} {heure}", "%d/%m/%Y %H:%M:%S")
     return {
         "id": brut["Id"],
         "piece": brut["piece"],
