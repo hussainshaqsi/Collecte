@@ -31,7 +31,7 @@ TOPICS = [
 ]
 
 DB = {
-    "host": "10.252.14.75",      # 127.0.0.1 si MySQL est local, sinon IP de la VM Windows
+    "host": "10.252.14.75",      # 127.0.0.1 si MySQL est local, sinon IP de la VM
     "user": "sae",
     "password": "toto",
     "database": "sae204",
