@@ -68,7 +68,7 @@ def parse_message(payload: str) -> dict:
     return {
         "id": brut["Id"],
         "piece": brut["piece"],
-        "date_mesure": dt.strftime("%Y-%m-%d %H:%M:%S"),
+        "timestamp": dt.strftime("%Y-%m-%d %H:%M:%S"),
         "temperature": float(brut["temp"]),
     }
 
@@ -108,7 +108,7 @@ def inserer_mesure(conn, m: dict):
         cur.execute(
             "INSERT INTO mesure (capteur_id, timestamp, temperature) "
             "VALUES (%s, %s, %s)",
-            (m["id"], m["date_mesure"], m["temperature"]),
+            (m["id"], m["timestamp"], m["temperature"]),
         )
     conn.commit()
 
@@ -160,7 +160,7 @@ def on_message(client, userdata, msg):
 
     # Affichage terminal (exige par les validations, slide 19)
     print(f"Recu  id={m['id']}  piece={m['piece']}  "
-          f"{m['date_mesure']}  temp={m['temperature']} C")
+          f"{m['timestamp']}  temp={m['temperature']} C")
 
     conn = get_connexion()
     if conn is not None:
