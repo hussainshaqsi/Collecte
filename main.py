@@ -35,11 +35,6 @@ def parse_message(payload: str) -> dict:
 
     Trame type :
       Id=12A6B8AF6CD3,piece=sejour,date=15/06/2026,heure=12:13:14,temp=26,35
-
-    PIEGE A CONNAITRE POUR L'ORAL : la temperature "26,35" contient une
-    virgule, exactement comme le separateur de champs. Un simple split(',')
-    la couperait en deux. On recolle le morceau orphelin (le "35") a la
-    valeur precedente avec un point decimal.
     """
     brut = {}
     derniere_cle = None
@@ -66,10 +61,6 @@ def parse_message(payload: str) -> dict:
 #  2) ACCES BASE DE DONNEES (requetes SQL brutes, sans ORM)
 # ============================================================
 def get_connexion():
-    """
-    Renvoie une connexion MySQL vivante, ou None si la base est injoignable.
-    Si la connexion existait mais a expire, ping(reconnect=True) la relance.
-    """
     global _conn
     try:
         if _conn is None:
