@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
 # ============================================================
-#  SAE2.04 - Script de collecte des donnees capteurs  (OPTION 2)
-# ------------------------------------------------------------
-#  Recoit les trames MQTT, les insere DIRECTEMENT dans MySQL avec
-#  des requetes SQL brutes, et gere les coupures de la base grace
-#  a un cache local (deconnexion / reconnexion).
-#
-#  Conforme aux validations du sujet (slides 19, 26, 29) :
-#    - reception des messages en mode terminal
-#    - insertion en base via requetes SQL (INSERT, sans ORM)
-#    - gestion deconnexion / reconnexion de la base de donnees
-#
 #  Dependances :  pip install paho-mqtt PyMySQL
 #  Lancement   :  python3 collecte.py     (Ctrl+C pour arreter)
 # ============================================================
@@ -32,8 +21,8 @@ TOPICS = [
 
 from config import  DB
 
-CACHE = "cache.jsonl"          # mesures en attente quand la base est injoignable
-_conn = None                   # connexion MySQL reutilisee entre les messages
+CACHE = "cache.jsonl"          
+_conn = None                   
 # ------------------------------------------------------------
 
 
@@ -96,9 +85,6 @@ def get_connexion():
 def inserer_mesure(conn, m: dict):
     """Insere une mesure avec deux requetes SQL brutes."""
     with conn.cursor() as cur:
-        # 1) Cree le capteur s'il n'existe pas encore.
-        #    nom par defaut = id (garantit l'unicite), emplacement = piece.
-        #    INSERT IGNORE = ne fait rien si l'id est deja present.
         cur.execute(
             "INSERT IGNORE INTO capteur (id, nom, piece, emplacement) "
             "VALUES (%s, %s, %s, %s)",
@@ -158,7 +144,7 @@ def on_message(client, userdata, msg):
         print(f"Trame ignoree ({e}) : {payload}")
         return
 
-    # Affichage terminal (exige par les validations, slide 19)
+    # Affichage terminal 
     print(f"Recu  id={m['id']}  piece={m['piece']}  "
           f"{m['timestamp']}  temp={m['temperature']} C")
 
