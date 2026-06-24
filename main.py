@@ -74,14 +74,16 @@ def get_connexion():
 
 
 def inserer_mesure(conn, m: dict):
-    """Insere une mesure avec deux requetes SQL brutes."""
+    """Insere une mesure avec des requetes SQL brutes."""
     with conn.cursor() as cur:
-        cur.execute(
-            "INSERT IGNORE INTO capteur (id, nom, piece, emplacement) "
-            "VALUES (%s, %s, %s, %s)",
-            (m["id"], m["id"], m["piece"], m["piece"]),
-        )
-        # 2) Insere la temperature (cle etrangere capteur_id)
+        cur.execute("SELECT id FROM capteur WHERE id = %s", (m["id"],))
+        existe = cur.fetchone()
+        if existe is None:
+            cur.execute(
+                "INSERT INTO capteur (id, nom, piece, emplacement) "
+                "VALUES (%s, %s, %s, %s)",
+                (m["id"], m["id"], m["piece"], m["piece"]),
+            )
         cur.execute(
             "INSERT INTO mesure (capteur_id, timestamp, temperature) "
             "VALUES (%s, %s, %s)",
