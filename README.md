@@ -1,27 +1,27 @@
-# Collecte: MQTT to MySQL temperature collector
+# Collecte : collecteur de températures MQTT vers MySQL
 
-Python service that listens to temperature messages published by home sensors over MQTT and stores them in a MySQL database. It is the data-ingestion half of my SAÉ 2.04 project; the dashboard is [SAe-projet-integratif](https://github.com/hussainshaqsi/SAe-projet-integratif).
+Service Python qui écoute les messages de température publiés par des capteurs domestiques en MQTT et les enregistre dans une base MySQL. C'est la partie « collecte des données » de mon projet SAÉ 2.04 ; le tableau de bord est [SAe-projet-integratif](https://github.com/hussainshaqsi/SAe-projet-integratif).
 
 ```
-Sensors --MQTT--> collecte (this repo) --SQL--> MySQL --> Django dashboard
+Capteurs --MQTT--> collecte (ce dépôt) --SQL--> MySQL --> Tableau de bord Django
 ```
 
-## How it works
-- Subscribes to the MQTT topics of the sensors (HiveMQ public broker, `IUT/Colmar2026/SAE2.04/...`)
-- Parses each message, e.g. `Id=12A6B8AF6CD3,piece=sejour,date=15/06/2026,heure=12:13:14,temp=26,35`, into a sensor id, room, timestamp and temperature (it also handles the comma used as a decimal separator)
-- Inserts the sensor if it is new, then the measurement, with raw SQL (no ORM)
-- **Keeps working when the database is down:** unsent readings go to a local `cache.jsonl` file and are flushed to MySQL as soon as the connection is back
-- Reconnects to the MQTT broker automatically
+## Fonctionnement
+- S'abonne aux topics MQTT des capteurs (broker public HiveMQ, `IUT/Colmar2026/SAE2.04/...`)
+- Analyse chaque message, par exemple `Id=12A6B8AF6CD3,piece=sejour,date=15/06/2026,heure=12:13:14,temp=26,35`, pour en extraire l'identifiant du capteur, la pièce, la date et la température (la virgule décimale est gérée)
+- Insère le capteur s'il est nouveau, puis la mesure, en SQL brut (sans ORM)
+- **Continue de fonctionner si la base est indisponible :** les relevés non envoyés sont mis dans un fichier local `cache.jsonl`, puis renvoyés vers MySQL dès que la connexion revient
+- Se reconnecte automatiquement au broker MQTT
 
-## Run it
+## Lancer
 
 ```bash
 pip install -r requirements.txt
-cp config.example.py config.py      # then put your MySQL credentials in config.py
-python main.py                      # Ctrl+C to stop
+cp config.example.py config.py      # puis renseigner les identifiants MySQL dans config.py
+python main.py                      # Ctrl+C pour arrêter
 ```
 
-`config.py` is git-ignored so credentials never reach the repository.
+`config.py` est ignoré par git : les identifiants n'arrivent jamais dans le dépôt.
 
-## Stack
+## Technologies
 Python, paho-mqtt, PyMySQL, MySQL
